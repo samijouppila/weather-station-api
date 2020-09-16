@@ -1,0 +1,389 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Weather station API",
+    "version": "1.0",
+    "description": "API for creating and reading weather data from user submitted sensors"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "get": {
+        "summary": "Get user info for all users",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {}
+              }
+            }
+          }
+        },
+        "operationId": "get-users",
+        "description": "Endpoint for receiving all user data (for admin)",
+        "security": [
+          {
+            "Admin Authentication": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create new user",
+        "operationId": "post-users",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "Unique id of the created user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Endpoint for creating a new user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "birthDate": {
+                    "type": "string",
+                    "description": "ISO 8601"
+                  },
+                  "address": {
+                    "type": "object",
+                    "required": [
+                      "street",
+                      "country",
+                      "postalCode",
+                      "city"
+                    ],
+                    "properties": {
+                      "street": {
+                        "type": "string"
+                      },
+                      "country": {
+                        "type": "string"
+                      },
+                      "postalCode": {
+                        "type": "string"
+                      },
+                      "city": {
+                        "type": "string",
+                        "description": "ISO 3166"
+                      }
+                    }
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "username",
+                  "name",
+                  "birthDate",
+                  "address",
+                  "email",
+                  "password"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "username": "mattimei",
+                    "name": "Matti Meikäläinen",
+                    "birthDate": "2000-09-01",
+                    "address": {
+                      "street": "Pentti Kaiteran katu 1",
+                      "country": "FI",
+                      "postalCode": "90570",
+                      "city": "Oulu"
+                    },
+                    "email": "mattimei@oamk.fi",
+                    "password": "MJU765RFV"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Get user info",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-users-id",
+        "description": "Endpoint for receiving selected user info (accessible for own information, or any user for admin)",
+        "security": [
+          {
+            "User Authentication": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "Modify existing user",
+        "operationId": "put-users-id",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {}
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {}
+              }
+            }
+          }
+        },
+        "description": "Endpoint for modifying existing user (accessible for own user account, or any user for admin)",
+        "security": [
+          {
+            "User Authentication": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete existing user",
+        "operationId": "delete-users-id",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Endpoint for deleting existing user (accessible for own user account, or any user for admin)",
+        "security": [
+          {
+            "User Authentication": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "title": "User",
+        "type": "object",
+        "x-examples": {
+          "user-example": {
+            "username": "mattimei",
+            "name": "Matti Meikäläinen",
+            "birthDate": "2000-09-01",
+            "address": {
+              "street": "Pentti Kaiteran katu 1",
+              "country": "FI",
+              "postalCode": "90530",
+              "city": "Oulu"
+            },
+            "email": "mattimei@oamk.fi"
+          }
+        },
+        "description": "User model",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "birthDate": {
+            "type": "string",
+            "description": "ISO 8601"
+          },
+          "address": {
+            "type": "object",
+            "required": [
+              "street",
+              "country",
+              "postalCode",
+              "city"
+            ],
+            "properties": {
+              "street": {
+                "type": "string"
+              },
+              "country": {
+                "type": "string",
+                "description": "ISO 3166"
+              },
+              "postalCode": {
+                "type": "string"
+              },
+              "city": {
+                "type": "string"
+              }
+            }
+          },
+          "email": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "username",
+          "name",
+          "birthDate",
+          "address",
+          "email",
+          "id"
+        ]
+      },
+      "ErrorResponse": {
+        "title": "ErrorResponse",
+        "type": "object",
+        "properties": {
+          "errorDescription": {
+            "type": "string"
+          }
+        },
+        "description": "Error response object model"
+      }
+    },
+    "securitySchemes": {
+      "User Authentication": {
+        "type": "http",
+        "scheme": "basic"
+      },
+      "Sensor Authentication": {
+        "type": "http",
+        "scheme": "basic"
+      },
+      "Admin Authentication": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    }
+  }
+}
