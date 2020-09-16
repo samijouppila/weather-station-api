@@ -4,7 +4,7 @@ const userRouter = require('./users');
 const apiRouter = express.Router();
 
 apiRouter.get('/', (req, res) => {
-    res.status(200).send("Weather Station API root");
+    res.status(200).send("Weather Station API root. See /documentation");
 })
 
 apiRouter.get('/documentation', (req, res) => {
