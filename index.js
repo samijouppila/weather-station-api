@@ -4,7 +4,7 @@ const port = 3000
 const apiRouter = require('./routes');
 
 app.get('/', (req, res) => {
-  res.status(200).send("Weather Station Application root");
+  res.status(200).send("Weather Station Application root. See /api");
 })
 
 app.use('/api', apiRouter);
