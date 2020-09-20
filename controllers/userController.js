@@ -1,46 +1,61 @@
 const { v4: uuidv4 } = require('uuid');
-const { request } = require('express');
+const User = require('../models/User');
 
-const users = require('../db/db').users;
-
-const getAllUsers = (req, res) => {
-    res.status(200).json(users);
+const getAllUsers = async (req, res, next) => {
+    User.find({}, '-__v -password', function(err, users) {
+        if (err) next(); 
+        res.status(200).json(users);
+    });
 }
 
-const getSelectedUser = (req, res) => {
-    const existingUser = users.find( user => user.id == req.params.id);
-    if (existingUser) {
-        res.status(200).json(existingUser)
-    } else {
-        res.status(404).send("Not Found")
+const getSelectedUser = async (req, res) => {
+    User.findOne({ _id: req.params.id }, '-__v -password', function(err, user) {
+        if (err) res.status(404).send("Not Found");
+        res.status(200).json(user);
+    });
+}
+
+const createNewUser = async (req, res, next) => {
+    console.log(req.body);
+    try {
+        const newUser = new User(req.body);
+        newUser.save( (err, user) => {
+            if (err) {
+                res.status(400).send(err.message)
+            }
+            console.log(user);
+            res.status(201).send("Created")
+        })
+    } catch (error) {
+        console.log(error)
+        next();
     }
 }
 
-const createNewUser = (req, res) => {
-    const newUser = {...req.body};
-    newUser.id = uuidv4();
-    users.push(newUser);
-    res.status(201).json({
-        id: newUser.id
-    })
-}
-
-const modifyExistingUser = (req, res) => {
-    const existingUser = users.find( user => user.id == req.params.id);
-    if (existingUser) {
+const modifyExistingUser = async (req, res) => {
+    User.findOne({ _id: req.params.id}, '__v', function (err, user) {
+        if (err) res.status(404).send("Not Found");
         for (const key in req.body) {
-            existingUser[key] = req.body[key]
+            user[key] = req.body[key];
         }
-        res.status(200).send("OK!")
-    } else {
-        res.status(404).send("Not Found")
-    }
-    
+        user.save( function (err, user) {
+            if (err) res.status(400).send("Bad Request");
+            res.status(200).send("OK!")
+        })
+    })    
+}
+
+const deleteExistingUser = async (req, res) => {
+    User.findOneAndRemove({ _id: req.params.id}, function(err, user){
+        if (err) res.status(404).send("Not Found");
+        res.status(200).send("OK!");
+    })
 }
 
 module.exports = {
     getAllUsers,
     getSelectedUser,
     createNewUser,
-    modifyExistingUser
+    modifyExistingUser,
+    deleteExistingUser
 }

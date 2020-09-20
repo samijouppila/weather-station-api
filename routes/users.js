@@ -5,20 +5,18 @@ const {
     getAllUsers,
     getSelectedUser,
     createNewUser,
-    modifyExistingUser
+    modifyExistingUser,
+    deleteExistingUser
 } = require('../controllers/userController');
-
-const {
-    validateUserCreationRequestBody,
-    validateUserModificationRequestBody
-} = require('../validators/userValidator');
 
 userRouter.get('', getAllUsers);
 
 userRouter.get('/:id', getSelectedUser);
 
-userRouter.post('', validateUserCreationRequestBody, createNewUser);
+userRouter.post('', createNewUser);
 
-userRouter.put('/:id', validateUserModificationRequestBody, modifyExistingUser);
+userRouter.put('/:id', modifyExistingUser);
+
+userRouter.delete('/:id', deleteExistingUser);
 
 module.exports = userRouter;
