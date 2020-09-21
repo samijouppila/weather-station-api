@@ -5,6 +5,6 @@ const {
     postNewRecordForSensor
 } = require('../controllers/sensorController');
 
-sensorRouter.post('/:id/records', postNewRecordForSensor);
+sensorRouter.post('/:slug/records', postNewRecordForSensor);
 
 module.exports = sensorRouter;

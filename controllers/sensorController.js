@@ -3,7 +3,7 @@ const Sensor = require('../models/Sensor');
 
 const postNewRecordForSensor = async (req, res) => {
     console.log(req.body);
-    Sensor.findOne({ _id: req.params.id }, function(err, sensor) {
+    Sensor.findOne({ slug: req.params.slug }, function(err, sensor) {
         if (err || !sensor) return res.status(404).send("Sensor not found");
         const newRecord = new SensorRecord({
             ...req.body,
