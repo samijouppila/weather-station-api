@@ -1,5 +1,6 @@
 const express = require('express');
 const userRouter = require('./users');
+const sensorRouter = require('./sensors');
 
 const apiRouter = express.Router();
 
@@ -13,5 +14,6 @@ apiRouter.get('/documentation', (req, res) => {
 })
 
 apiRouter.use('/users', userRouter);
+apiRouter.use('/sensors', sensorRouter);
 
 module.exports = apiRouter;
