@@ -306,7 +306,7 @@
               }
             }
           },
-          "description": ""
+          "description": "Request body for modifying user data. All fields optional"
         }
       },
       "delete": {
@@ -338,6 +338,526 @@
           }
         },
         "description": "Endpoint for deleting existing user (accessible for own user account, or any user for admin)",
+        "security": [
+          {
+            "User Authentication": []
+          }
+        ]
+      }
+    },
+    "/users/{id}/sensors": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Get user's sensors",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "location": {
+                        "type": "object",
+                        "properties": {
+                          "latitude": {
+                            "type": "string"
+                          },
+                          "longitude": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "sensorDataTypes": {
+                        "type": "object",
+                        "properties": {
+                          "humidity": {
+                            "type": "string"
+                          },
+                          "temperature": {
+                            "type": "string"
+                          },
+                          "rainfall": {
+                            "type": "string"
+                          },
+                          "wind": {
+                            "type": "string"
+                          },
+                          "cloudCoverage": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "slug": {
+                        "type": "string"
+                      },
+                      "_id": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "location": {
+                        "latitude": 65.059750352,
+                        "longitude": 25.467724278
+                      },
+                      "sensorDataTypes": {
+                        "humidity": true,
+                        "temperature": true,
+                        "rainfall": true,
+                        "wind": true,
+                        "cloudCoverage": true
+                      },
+                      "_id": "5f689e4e39f6de948c7981e4",
+                      "type": "Raspberry Pi",
+                      "description": "Weather station on top of university",
+                      "slug": "Weather-station-on-top-of-university"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {}
+              }
+            }
+          }
+        },
+        "operationId": "get-users-id-sensors",
+        "description": "Endpoint for receiving all sensors for user",
+        "security": [
+          {
+            "User Authentication": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create new sensor",
+        "operationId": "post-users-id-sensors",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "slug": {
+                      "type": "string"
+                    },
+                    "auth": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string"
+                        },
+                        "password": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "description": "Endpoint for creating a new sensor for user",
+        "security": [
+          {
+            "User Authentication": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "location": {
+                    "type": "object",
+                    "required": [
+                      "latitude",
+                      "longitude"
+                    ],
+                    "properties": {
+                      "latitude": {
+                        "type": "number"
+                      },
+                      "longitude": {
+                        "type": "number"
+                      }
+                    }
+                  },
+                  "sensorDataTypes": {
+                    "type": "object",
+                    "required": [
+                      "humidity",
+                      "temperature",
+                      "rainfall",
+                      "wind",
+                      "cloudCoverage"
+                    ],
+                    "properties": {
+                      "humidity": {
+                        "type": "boolean"
+                      },
+                      "temperature": {
+                        "type": "boolean"
+                      },
+                      "rainfall": {
+                        "type": "boolean"
+                      },
+                      "wind": {
+                        "type": "boolean"
+                      },
+                      "cloudCoverage": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "type",
+                  "description",
+                  "location",
+                  "sensorDataTypes"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "type": "Raspberry Pi",
+                    "description": "Weather station on top of university",
+                    "location": {
+                      "latitude": 65.059750352,
+                      "longitude": 25.467724278
+                    },
+                    "sensorDataTypes": {
+                      "humidity": true,
+                      "temperature": true,
+                      "rainfall": true,
+                      "wind": true,
+                      "cloudCoverage": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "description": ""
+        }
+      }
+    },
+    "/users/{id}/sensors/{sensorId}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "sensorId",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Get selected sensor data",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-users-id-sensors-sensorId",
+        "description": "Endpoint for receiving a single sensor's data for user",
+        "security": [
+          {
+            "User Authentication": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "location": {
+                    "type": "object",
+                    "properties": {
+                      "latitude": {
+                        "type": "string"
+                      },
+                      "longitude": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "sensorDataTypes": {
+                    "type": "object",
+                    "properties": {
+                      "humidity": {
+                        "type": "boolean"
+                      },
+                      "temperature": {
+                        "type": "boolean"
+                      },
+                      "rainfall": {
+                        "type": "boolean"
+                      },
+                      "wind": {
+                        "type": "boolean"
+                      },
+                      "cloudCoverage": {
+                        "type": "boolean"
+                      }
+                    }
+                  },
+                  "slug": {
+                    "type": "string"
+                  },
+                  "_id": {
+                    "type": "string"
+                  }
+                }
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "location": {
+                      "latitude": 65.059750352,
+                      "longitude": 25.467724278
+                    },
+                    "sensorDataTypes": {
+                      "humidity": true,
+                      "temperature": true,
+                      "rainfall": true,
+                      "wind": true,
+                      "cloudCoverage": true
+                    },
+                    "_id": "5f689e4e39f6de948c7981e4",
+                    "type": "Raspberry Pi",
+                    "description": "Weather station on top of university",
+                    "slug": "Weather-station-on-top-of-university-102ddc88-5490-4137-a217-adc5d5f0752c"
+                  }
+                }
+              }
+            }
+          },
+          "description": ""
+        }
+      },
+      "put": {
+        "summary": "Modify selected sensor data",
+        "operationId": "put-users-id-sensors-sensorId",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Endpoint for modifying a single sensor's data for user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "location": {
+                    "type": "object",
+                    "properties": {
+                      "latitude": {
+                        "type": "string"
+                      },
+                      "longitude": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "sensorDataTypes": {
+                    "type": "object",
+                    "properties": {
+                      "humidity": {
+                        "type": "boolean"
+                      },
+                      "temperature": {
+                        "type": "boolean"
+                      },
+                      "rainfall": {
+                        "type": "boolean"
+                      },
+                      "wind": {
+                        "type": "boolean"
+                      },
+                      "cloudCoverage": {
+                        "type": "boolean"
+                      }
+                    }
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Request body for modifying user data. All fields optional"
+        },
+        "security": [
+          {
+            "User Authentication": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete selected sensor",
+        "operationId": "delete-users-id-sensors-sensorId",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Endpoint for deleting a sensor for user",
         "security": [
           {
             "User Authentication": []
@@ -434,6 +954,120 @@
           }
         },
         "description": "Error response object model"
+      },
+      "Sensor": {
+        "title": "Sensor",
+        "type": "object",
+        "x-examples": {
+          "example-1": {
+            "type": "Raspberry Pi",
+            "description": "Weather station on top of university",
+            "location": {
+              "latitude": 65.059750352,
+              "longitude": 25.467724278
+            },
+            "sensorDataTypes": {
+              "humidity": true,
+              "temperature": true,
+              "rainfall": true,
+              "wind": true,
+              "cloudCoverage": true
+            },
+            "user": {
+              "username": "mattimei",
+              "name": "Matti Meikäläinen",
+              "birthDate": "2000-09-01",
+              "address": {
+                "street": "Pentti Kaiteran katu 1",
+                "country": "FI",
+                "postalCode": "90530",
+                "city": "Oulu"
+              },
+              "email": "mattimei@oamk.fi",
+              "password": "TRE543QAZ",
+              "_id": "4f8313a89231d42189ac"
+            },
+            "_id": "8313a89231d42189a4f",
+            "slug": "weather-station-on-top-of-university",
+            "password": "11bf5b37-e0b8-42e0-8dcf-dc8c4aefc000"
+          }
+        },
+        "description": "Sensor Model",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "location": {
+            "type": "object",
+            "required": [
+              "latitude",
+              "longitude"
+            ],
+            "properties": {
+              "latitude": {
+                "type": "number"
+              },
+              "longitude": {
+                "type": "number"
+              }
+            }
+          },
+          "sensorDataTypes": {
+            "type": "object",
+            "required": [
+              "humidity",
+              "temperature",
+              "rainfall",
+              "wind",
+              "cloudCoverage"
+            ],
+            "properties": {
+              "humidity": {
+                "type": "boolean"
+              },
+              "temperature": {
+                "type": "boolean"
+              },
+              "rainfall": {
+                "type": "boolean"
+              },
+              "wind": {
+                "type": "boolean"
+              },
+              "cloudCoverage": {
+                "type": "boolean"
+              }
+            }
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "_id": {
+            "type": "string",
+            "description": "Generated by MongoDB"
+          },
+          "slug": {
+            "type": "string",
+            "description": "Generated unique slug for API diaplay"
+          },
+          "password": {
+            "type": "string",
+            "description": "Generated on creation, required to post data"
+          }
+        },
+        "required": [
+          "type",
+          "description",
+          "location",
+          "sensorDataTypes",
+          "user",
+          "_id",
+          "slug",
+          "password"
+        ]
       }
     },
     "securitySchemes": {
