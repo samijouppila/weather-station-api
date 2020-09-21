@@ -864,6 +864,118 @@
           }
         ]
       }
+    },
+    "/sensors/{id}/records": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "post": {
+        "summary": "Submit new sensor record",
+        "operationId": "post-sensors-id-records",
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Sensor Authentication": []
+          }
+        ],
+        "description": "Endpoint for sensors to submit timestamped record values",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "timestamp": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2017-07-21T17:32:28Z"
+                  },
+                  "values": {
+                    "type": "object",
+                    "properties": {
+                      "humidity": {
+                        "type": "number"
+                      },
+                      "temperature": {
+                        "type": "number"
+                      },
+                      "rainfall": {
+                        "type": "number"
+                      },
+                      "wind": {
+                        "type": "number"
+                      },
+                      "cloudCoverage": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "timestamp",
+                  "values"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "timestamp": "2017-07-21T17:32:28Z",
+                    "values": {
+                      "humidity": 0,
+                      "temperature": 0,
+                      "rainfall": 0,
+                      "wind": 0,
+                      "cloudCoverage": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "description": ""
+        }
+      }
     }
   },
   "components": {
@@ -1067,6 +1179,80 @@
           "_id",
           "slug",
           "password"
+        ]
+      },
+      "SensorRecord": {
+        "title": "SensorRecord",
+        "type": "object",
+        "description": "A timestamped data record of sensor values",
+        "x-examples": {
+          "example-1": {
+            "timestamp": "2017-07-21T17:32:28Z",
+            "values:": {
+              "humidity": 0,
+              "temperature": 0,
+              "rainfall": 0,
+              "wind": 0,
+              "cloudCoverage": 0
+            },
+            "sensor": {
+              "type": "Raspberry Pi",
+              "description": "Weather station on top of university",
+              "location": {
+                "latitude": 65.059750352,
+                "longitude": 25.467724278
+              },
+              "sensorDataTypes": {
+                "humidity": true,
+                "temperature": true,
+                "rainfall": true,
+                "wind": true,
+                "cloudCoverage": true
+              },
+              "_id": "8313a89231d42189a4f",
+              "slug": "weather-station-on-top-of-university"
+            },
+            "_id": "3a89231d42189a4f813"
+          }
+        },
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "description": "",
+            "format": "date-time",
+            "example": "2017-07-21T17:32:28Z"
+          },
+          "values:": {
+            "type": "object",
+            "properties": {
+              "humidity": {
+                "type": "number"
+              },
+              "temperature": {
+                "type": "number"
+              },
+              "rainfall": {
+                "type": "number"
+              },
+              "wind": {
+                "type": "number"
+              },
+              "cloudCoverage": {
+                "type": "number"
+              }
+            }
+          },
+          "sensor": {
+            "$ref": "#/components/schemas/Sensor"
+          },
+          "_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "timestamp",
+          "sensor",
+          "_id"
         ]
       }
     },
