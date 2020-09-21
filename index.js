@@ -30,6 +30,19 @@ const mongoose = require('mongoose');
   }
 })();
 
+app.use((err, req, res, next) => {
+  console.log(err.message);
+  if (!err.statusCode) {
+    err.statusCode = 500;
+  }
+  res.status(err.statusCode).send({
+    error:
+      err.statusCode >= 500
+        ? 'An unexpected error ocurred, please try again later.'
+        : err.message,
+  });
+});
+
 app.listen(port, () => {
   console.log(`Weather station listening at http://localhost:${port}`)
 })
