@@ -8,7 +8,7 @@ const {
 const getAllUsers = async (req, res, next) => {
     User.find({}, '-__v -password', function(err, users) {
         if (err) next(); 
-        res.status(200).json(users);
+        res.status(200).json({users});
     });
 }
 
@@ -60,7 +60,7 @@ const deleteExistingUser = async (req, res) => {
 const getUserSensors = async (req, res) => {
     Sensor.find({ user: req.params.id }, '-__v -password -user', function (err, sensors) {
         if (err)  return res.status(404).send("User not found")
-        res.status(200).json(sensors);
+        res.status(200).json({sensors});
     })
 }
 
