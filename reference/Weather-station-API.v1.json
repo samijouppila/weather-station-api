@@ -66,6 +66,27 @@
                       }
                     }
                   }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "users": [
+                        {
+                          "username": "string",
+                          "name": "string",
+                          "birthDate": "string",
+                          "address": {
+                            "street": "string",
+                            "country": "string",
+                            "postalCode": "string",
+                            "city": "string"
+                          },
+                          "email": "string",
+                          "_id": "string"
+                        }
+                      ]
+                    }
+                  }
                 }
               }
             }
@@ -380,7 +401,8 @@
                     "type": "string"
                   }
                 }
-              }
+              },
+              "examples": {}
             }
           },
           "description": "Request body for modifying user data. All fields optional"
@@ -1301,7 +1323,169 @@
       "get": {
         "summary": "Get most recent data record of selected sensor",
         "tags": [],
-        "responses": {},
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "sensor": {
+                      "type": "object",
+                      "required": [
+                        "type",
+                        "description",
+                        "location",
+                        "sensorDataTypes",
+                        "_id",
+                        "slug"
+                      ],
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "location": {
+                          "type": "object",
+                          "required": [
+                            "latitude",
+                            "longitude"
+                          ],
+                          "properties": {
+                            "latitude": {
+                              "type": "number"
+                            },
+                            "longitude": {
+                              "type": "number"
+                            }
+                          }
+                        },
+                        "sensorDataTypes": {
+                          "type": "object",
+                          "properties": {
+                            "humidity": {
+                              "type": "boolean"
+                            },
+                            "temperature": {
+                              "type": "boolean"
+                            },
+                            "rainfall": {
+                              "type": "boolean"
+                            },
+                            "wind": {
+                              "type": "boolean"
+                            },
+                            "cloudCoverage": {
+                              "type": "boolean"
+                            }
+                          }
+                        },
+                        "_id": {
+                          "type": "string"
+                        },
+                        "slug": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "record": {
+                      "type": "object",
+                      "required": [
+                        "timestamp",
+                        "values",
+                        "_id"
+                      ],
+                      "properties": {
+                        "timestamp": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2017-07-21T17:32:28Z"
+                        },
+                        "values": {
+                          "type": "object",
+                          "properties": {
+                            "humidity": {
+                              "type": "number"
+                            },
+                            "temperature": {
+                              "type": "number"
+                            },
+                            "rainfall": {
+                              "type": "number"
+                            },
+                            "wind": {
+                              "type": "number"
+                            },
+                            "cloudCoverage": {
+                              "type": "number"
+                            }
+                          }
+                        },
+                        "_id": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "sensor",
+                    "record"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "sensor": {
+                        "type": "Raspberry Pi",
+                        "description": "Weather station on top of university",
+                        "location": {
+                          "latitude": 65.059750352,
+                          "longitude": 25.467724278
+                        },
+                        "sensorDataTypes": {
+                          "humidity": true,
+                          "temperature": true,
+                          "rainfall": true,
+                          "wind": true,
+                          "cloudCoverage": true
+                        },
+                        "user": {
+                          "name": "Matti Meikäläinen"
+                        },
+                        "_id": "8313a89231d42189a4f",
+                        "slug": "weather-station-on-top-of-university"
+                      },
+                      "record": {
+                        "timestamp": "2017-07-21T17:32:28Z",
+                        "values": {
+                          "humidity": 0,
+                          "temperature": 0,
+                          "rainfall": 0,
+                          "wind": 0,
+                          "cloudCoverage": 0
+                        },
+                        "_id": "3a89231d42189a4f813"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
         "operationId": "get-sensors-slug-records-current",
         "description": "Endpoint for fetching most recent weather data record of selected sensor"
       }
@@ -1320,7 +1504,145 @@
       "get": {
         "summary": "Get weather record history from selected sensor",
         "tags": [],
-        "responses": {},
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "sensor": {
+                      "type": "object",
+                      "required": [
+                        "type",
+                        "description",
+                        "location",
+                        "sensorDataTypes",
+                        "_id",
+                        "slug"
+                      ],
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "location": {
+                          "type": "object",
+                          "required": [
+                            "latitude",
+                            "longitude"
+                          ],
+                          "properties": {
+                            "latitude": {
+                              "type": "number"
+                            },
+                            "longitude": {
+                              "type": "number"
+                            }
+                          }
+                        },
+                        "sensorDataTypes": {
+                          "type": "object",
+                          "properties": {
+                            "humidity": {
+                              "type": "string"
+                            },
+                            "temperature": {
+                              "type": "string"
+                            },
+                            "rainfall": {
+                              "type": "string"
+                            },
+                            "wind": {
+                              "type": "string"
+                            },
+                            "cloudCoverage": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "_id": {
+                          "type": "string"
+                        },
+                        "slug": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "timestamp": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2017-07-21T17:32:28Z"
+                          },
+                          "values": {
+                            "type": "object",
+                            "properties": {
+                              "humidity": {
+                                "type": "number"
+                              },
+                              "temperature": {
+                                "type": "number"
+                              },
+                              "rainfall": {
+                                "type": "number"
+                              },
+                              "wind": {
+                                "type": "number"
+                              },
+                              "cloudCoverage": {
+                                "type": "number"
+                              }
+                            }
+                          },
+                          "_id": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "timestamp",
+                          "values",
+                          "_id"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "sensor",
+                    "records"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
         "operationId": "get-sensors-slug-records-history",
         "description": "Endpoint for fetching all weather records within queried date range from selected sensor",
         "parameters": [
