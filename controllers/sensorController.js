@@ -38,8 +38,31 @@ const postNewRecordForSensor = async (req, res) => {
     });
 }
 
+const getRecentRecordForSensor = async (req, res) => {
+    Sensor.findOne( { slug: req.params.slug }, ' -__v -password' )
+        .populate('user', '-username -birthDate -address -email -password -_id -__v')
+        .exec( function (err, sensor) {
+            if (err || !sensor) return res.status(404).send("Sensor not found");
+            SensorRecord.find({ sensor: sensor._id }, '-__v -sensor')
+                .sort({ timestamp: -1})
+                .limit(1)
+                .exec( function (err, records) {
+                    if (err || records.length === 0) return res.status(404).send("No record found");
+                    res.status(200).json(
+                        {
+                            sensor,
+                            record: records[0]
+                        }
+                    );
+                }
+            );
+        }
+    );
+}
+
 module.exports = {
     getAllBasicSensorInformation,
     getBasicInformationOnSelectedSensor,
-    postNewRecordForSensor
+    postNewRecordForSensor,
+    getRecentRecordForSensor
 }
