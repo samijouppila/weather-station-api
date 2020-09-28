@@ -1676,7 +1676,7 @@
             },
             "in": "query",
             "name": "endDate",
-            "description": "End date (format DD-MM-YYYY)",
+            "description": "End date (format YYYY-MM-DD)",
             "required": true
           },
           {
@@ -1685,7 +1685,7 @@
             },
             "in": "query",
             "name": "startDate",
-            "description": "Start date (format DD-MM-YYYY)",
+            "description": "Start date (format YYYY-MM-DD)",
             "required": true
           }
         ]
