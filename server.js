@@ -47,6 +47,7 @@ module.exports = {
         }
         (async function () {
             try {
+              console.log("Connecting to database...")
               await mongoose.connect(dbUri, {
                 useNewUrlParser: true,
                 useUnifiedTopology: true,

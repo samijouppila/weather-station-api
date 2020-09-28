@@ -1,6 +1,5 @@
 const SensorRecord = require('../models/SensorRecord');
 const Sensor = require('../models/Sensor');
-const User = require('../models/User');
 
 const getAllBasicSensorInformation = async (req, res, next) => {
     Sensor.find( {}, '-__v -password')
@@ -60,9 +59,51 @@ const getRecentRecordForSensor = async (req, res) => {
     );
 }
 
+const getRecordHistoryForSensor = async (req, res) => {
+    let endDate, startDate;
+    try {
+        const startDateArray = req.query.startDate.split('-');
+        startDate = new Date(Date.UTC(startDateArray[0], startDateArray[1] - 1, startDateArray[2]));
+        const endDateArray = req.query.endDate.split('-');
+        endDate = new Date(Date.UTC(endDateArray[0], endDateArray[1]- 1, endDateArray[2]));
+        if ((startDate.getTime() !== startDate.getTime()) || (endDate.getTime() !== endDate.getTime())) return res.status(400).send("Invalid date query parameters");
+    } catch (error) {
+        return res.status(400).send("Invalid date query parameters");
+    }
+    Sensor.findOne( { slug: req.params.slug }, ' -__v -password' )
+        .populate('user', '-username -birthDate -address -email -password -_id -__v')
+        .exec( function (err, sensor) {
+            if (err || !sensor) return res.status(404).send("Sensor not found");
+            SensorRecord.find(
+                {   
+                    sensor: sensor._id,
+                    timestamp:
+                    {
+                        "$gte": startDate,
+                        "$lt": endDate,
+                    }
+                }
+                , '-__v -sensor'
+            )
+                .sort({ timestamp: -1})
+                .exec( function (err, records) {
+                    if (err || records.length === 0) return res.status(404).send("No record found");
+                    res.status(200).json(
+                        {
+                            sensor,
+                            records: records
+                        }
+                    );
+                }
+            );
+        }
+    );
+}
+
 module.exports = {
     getAllBasicSensorInformation,
     getBasicInformationOnSelectedSensor,
     postNewRecordForSensor,
-    getRecentRecordForSensor
+    getRecentRecordForSensor,
+    getRecordHistoryForSensor
 }
